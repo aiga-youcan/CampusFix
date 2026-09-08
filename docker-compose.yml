@@ -12,7 +12,9 @@ services:
     volumes:
       - ./:/var/www
     environment:
+      - DB_CONNECTION=mysql
       - DB_HOST=mysql
+      - DB_PORT=3306
       - DB_DATABASE=campusfix
       - DB_USERNAME=campus_user
       - DB_PASSWORD=secret_password
