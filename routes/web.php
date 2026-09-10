@@ -26,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // CRUD Signalements
+    Route::delete('/signalements/{id}', [SignalementController::class, 'destroy'])->name('signalements.destroy');
     Route::get('/signalements', [SignalementController::class, 'index'])->name('signalements.index');
     Route::get('/signalements/nouveau', [SignalementController::class, 'create'])->name('signalements.create');
     Route::post('/signalements', [SignalementController::class, 'store'])->name('signalements.store');

@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 
 class SignalementController extends Controller
 {
-    
-
     public function index(Request $request)
     {
         $user = auth()->user();
@@ -46,15 +44,15 @@ class SignalementController extends Controller
             'title' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'category' => 'required|in:plomberie,electricite,mobilier,autre',
-            'severity' => 'required|in:faible,moyen,critique', // 1. اختيار الخطورة يدوياً من قِبلك
+            'severity' => 'required|in:faible,moyen,critique',
             'description' => 'required|string|min:10',
         ]);
 
-        // 2. استقبال معيار استعجال الحصة (EST FBS)
         $occupancy = $request->input('occupancy', 'today');
 
-        // 3. تحليل الذكاء الاصطناعي لحساب السكور والتشخيص
-        $aiResult = $this->aiTriage->analyze(
+        // 🤖 Istikhdam l-AI mn config/ai.php mni ḥwldnah
+        $aiEvaluator = config('ai.evaluate');
+        $aiResult = $aiEvaluator(
             $validated['title'],
             $validated['description'],
             $validated['location'],
@@ -62,13 +60,12 @@ class SignalementController extends Controller
             $occupancy
         );
 
-        // 4. حفظ البلاغ بالخطورة التي اخترتها أنت
         $signalement = Signalement::create([
             'user_id' => auth()->id(),
             'title' => $validated['title'],
             'location' => $validated['location'],
             'category' => $validated['category'],
-            'severity' => $validated['severity'], // الخطورة التي حددتها أنت بنفسك
+            'severity' => $validated['severity'],
             'description' => $validated['description'],
             'status' => 'signale',
             'ai_score' => $aiResult['score'],
@@ -77,8 +74,7 @@ class SignalementController extends Controller
             'ai_estimated_hours' => $aiResult['estimated_hours'],
         ]);
 
-        // Code l-jadid (بلا message)
-           return redirect()->route('signalements.index');
+        return redirect()->route('signalements.index');
     }
 
     public function show($id)
@@ -90,7 +86,6 @@ class SignalementController extends Controller
             abort(403, 'Accès non autorisé à ce signalement.');
         }
 
-        // 5. ميزة « Marquer comme lu » التلقائية عند معاينة التقني أو الأدمن للبلاغ
         if ($user && $user->hasRole(['technicien', 'admin'])) {
             $read = session('read_notifications', []);
             if (!in_array((int) $id, $read)) {
@@ -106,7 +101,9 @@ class SignalementController extends Controller
     {
         $signalement = Signalement::findOrFail($id);
 
-        $aiResult = $this->aiTriage->analyze(
+        // 🤖 Réévaluation mn config/ai.php
+        $aiEvaluator = config('ai.evaluate');
+        $aiResult = $aiEvaluator(
             $signalement->title,
             $signalement->description,
             $signalement->location,
@@ -122,5 +119,23 @@ class SignalementController extends Controller
         ]);
 
         return back()->with('info', "Diagnostic IA réévalué avec succès (Nouveau score : {$aiResult['score']}/100).");
+    }
+
+    // 🗑️ Méthode dyal Suppression khassa b l-Admin
+    public function destroy($id)
+    {
+        $signalement = Signalement::findOrFail($id);
+
+        if (!auth()->user()->hasRole('admin')) {
+            abort(403, 'Action non autorisée.');
+        }
+
+        // Mḥa l-interventions li m-lssiqin biha lowl bach t-fadi database foreign key error
+        $signalement->interventions()->delete();
+
+        // Mḥa l-signalement
+        $signalement->delete();
+
+        return redirect()->route('signalements.index')->with('success', 'Signalement supprimé avec succès.');
     }
 }
