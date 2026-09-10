@@ -55,7 +55,17 @@ class DatabaseSeeder extends Seeder
             $etudiant->addRole($demandeurRole);
         }
 
-        // 3. Exemples de Signalements avec Scores IA
+        // 💡 3. Creyi Users 3wadiyin bash l-factory t-stakhdmhum
+        $otherUsers = User::factory(5)->create()->each(function ($user) use ($demandeurRole) {
+            $user->addRole($demandeurRole);
+        });
+
+        // 💡 4. Creyi Signalements b factory b t-rtib s-sḥiḥ
+        Signalement::factory(15)->create([
+            'user_id' => $otherUsers->random()->id,
+        ]);
+
+        // 5. Exemples de Signalements fixes avec Scores IA
         $s1 = Signalement::create([
             'user_id' => $etudiant->id,
             'title' => 'Court-circuit et étincelles au tableau électrique',
@@ -84,7 +94,7 @@ class DatabaseSeeder extends Seeder
             'location' => 'Sanitaires 1er étage - Bâtiment A',
             'category' => 'plomberie',
             'severity' => 'moyen',
-            'status' => 'signale',
+            'status' => 'signale', // 💡 Bddlha men 'en_attente' l 'signale'
             'ai_score' => 55,
             'ai_diagnostic' => 'Incident modéré nécessitant une prise en charge dans la journée pour éviter une aggravation.',
             'ai_recommended_action' => 'Planifier l\'intervention d\'un plombier lors de la prochaine tournée.',
