@@ -12,7 +12,6 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
-        // 1. Métriques globales
         $stats = [
             'total_signalements' => Signalement::count(),
             'en_attente' => Signalement::where('status', 'signale')->count(),
@@ -23,15 +22,16 @@ class DashboardController extends Controller
             'avg_ai_score' => round(Signalement::avg('ai_score') ?? 0, 1),
         ];
 
-        // 2. Boîte de notifications des nouvelles pannes (pour Admin et Technicien)
+        $readIds = session('read_notifications', []);
+
         $notifications = Signalement::where('status', 'signale')
+            ->whereNotIn('id', $readIds)
             ->with('user')
             ->latest()
-            ->take(5)
+            ->take(6)
             ->get();
 
-        // 3. Signalements récents
-        if ($user->hasRole('demandeur')) {
+        if ($user && $user->hasRole('demandeur')) {
             $recentSignalements = Signalement::where('user_id', $user->id)
                 ->with('interventions.technicien')
                 ->latest()
@@ -45,5 +45,22 @@ class DashboardController extends Controller
         }
 
         return view('dashboard.index', compact('stats', 'notifications', 'recentSignalements', 'user'));
+    }
+
+    public function markAsRead($id)
+    {
+        $read = session('read_notifications', []);
+        if (!in_array((int) $id, $read)) {
+            $read[] = (int) $id;
+            session(['read_notifications' => $read]);
+        }
+        return back()->with('info', 'Alerte marquée comme lue.');
+    }
+
+    public function markAllAsRead()
+    {
+        $allIds = Signalement::where('status', 'signale')->pluck('id')->toArray();
+        session(['read_notifications' => $allIds]);
+        return back()->with('info', 'Toutes les alertes ont été marquées comme lues.');
     }
 }

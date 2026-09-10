@@ -3,17 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Signalement;
-use App\Services\AiTriageService;
 use Illuminate\Http\Request;
 
 class SignalementController extends Controller
 {
-    protected AiTriageService $aiTriage;
-
-    public function __construct(AiTriageService $aiTriage)
-    {
-        $this->aiTriage = $aiTriage;
-    }
+    
 
     public function index(Request $request)
     {
@@ -52,23 +46,30 @@ class SignalementController extends Controller
             'title' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'category' => 'required|in:plomberie,electricite,mobilier,autre',
+            'severity' => 'required|in:faible,moyen,critique', // 1. اختيار الخطورة يدوياً من قِبلك
             'description' => 'required|string|min:10',
         ]);
 
+        // 2. استقبال معيار استعجال الحصة (EST FBS)
+        $occupancy = $request->input('occupancy', 'today');
+
+        // 3. تحليل الذكاء الاصطناعي لحساب السكور والتشخيص
         $aiResult = $this->aiTriage->analyze(
             $validated['title'],
             $validated['description'],
             $validated['location'],
-            $validated['category']
+            $validated['category'],
+            $occupancy
         );
 
+        // 4. حفظ البلاغ بالخطورة التي اخترتها أنت
         $signalement = Signalement::create([
             'user_id' => auth()->id(),
             'title' => $validated['title'],
             'location' => $validated['location'],
             'category' => $validated['category'],
+            'severity' => $validated['severity'], // الخطورة التي حددتها أنت بنفسك
             'description' => $validated['description'],
-            'severity' => $aiResult['severity'],
             'status' => 'signale',
             'ai_score' => $aiResult['score'],
             'ai_diagnostic' => $aiResult['diagnostic'],
@@ -76,8 +77,8 @@ class SignalementController extends Controller
             'ai_estimated_hours' => $aiResult['estimated_hours'],
         ]);
 
-        return redirect()->to('/signalements/' . $signalement->id)
-            ->with('success', "Signalement créé avec succès ! L'IA a évalué un score de {$aiResult['score']}/100.");
+        // Code l-jadid (بلا message)
+           return redirect()->route('signalements.index');
     }
 
     public function show($id)
@@ -87,6 +88,15 @@ class SignalementController extends Controller
         $user = auth()->user();
         if ($user && $user->hasRole('demandeur') && $signalement->user_id !== $user->id) {
             abort(403, 'Accès non autorisé à ce signalement.');
+        }
+
+        // 5. ميزة « Marquer comme lu » التلقائية عند معاينة التقني أو الأدمن للبلاغ
+        if ($user && $user->hasRole(['technicien', 'admin'])) {
+            $read = session('read_notifications', []);
+            if (!in_array((int) $id, $read)) {
+                $read[] = (int) $id;
+                session(['read_notifications' => $read]);
+            }
         }
 
         return view('signalements.show', compact('signalement'));
@@ -100,17 +110,17 @@ class SignalementController extends Controller
             $signalement->title,
             $signalement->description,
             $signalement->location,
-            $signalement->category
+            $signalement->category,
+            'today'
         );
 
         $signalement->update([
-            'severity' => $aiResult['severity'],
             'ai_score' => $aiResult['score'],
             'ai_diagnostic' => $aiResult['diagnostic'],
             'ai_recommended_action' => $aiResult['recommended_action'],
             'ai_estimated_hours' => $aiResult['estimated_hours'],
         ]);
 
-        return back()->with('info', "Recalcul du triage IA terminé : nouveau score de {$aiResult['score']}/100.");
+        return back()->with('info', "Diagnostic IA réévalué avec succès (Nouveau score : {$aiResult['score']}/100).");
     }
 }
