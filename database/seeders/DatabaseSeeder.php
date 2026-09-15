@@ -31,15 +31,15 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // 2. Utilisateurs de test officiels
-        $admin = User::firstOrCreate(['email' => 'admin@estfbs.usms.ac.ma'], [
-            'name' => 'Direction EST FBS (Dr. Alami)',
+        $admin = User::firstOrCreate(['email' => 'admin@CCfbs.usms.ac.ma'], [
+            'name' => 'Direction CC FBS (Dr. Alami)',
             'password' => Hash::make('password'),
         ]);
         if (!$admin->hasRole('admin')) {
             $admin->addRole('admin');
         }
 
-        $technicien = User::firstOrCreate(['email' => 'technicien@estfbs.usms.ac.ma'], [
+        $technicien = User::firstOrCreate(['email' => 'technicien@CCfbs.usms.ac.ma'], [
             'name' => 'Karim Alami (Technicien)',
             'password' => Hash::make('password'),
         ]);

@@ -1,4 +1,4 @@
-<?php $__env->startSection('title', 'Déclarer un incident — EST FBS | CampusFix'); ?>
+<?php $__env->startSection('title', 'Déclarer un incident — CC FBS | CampusFix'); ?>
 
 <?php $__env->startSection('content'); ?>
 <div class="max-w-3xl mx-auto space-y-6">
@@ -24,7 +24,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div class="sm:col-span-1">
-                    <label class="block text-xs font-medium text-slate-700 uppercase tracking-wider mb-1">Salle / Emplacement (EST FBS) *</label>
+                    <label class="block text-xs font-medium text-slate-700 uppercase tracking-wider mb-1">Salle / Emplacement (CC FBS) *</label>
                     <select name="salle_id" required class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm text-slate-900 focus:border-slate-900 focus:outline-none">
                         <option value="">Sélectionnez une salle...</option>
                         <?php $__currentLoopData = $sallesByBuilding; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $building => $salles): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
