@@ -7,9 +7,6 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap any application services and register routes.
-     */
     public function boot()
     {
         $this->routes(function () {

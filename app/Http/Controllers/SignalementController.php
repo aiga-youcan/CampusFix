@@ -48,19 +48,7 @@ class SignalementController extends Controller
             'description' => 'required|string|min:10',
         ]);
 
-        $occupancy = $request->input('occupancy', 'today');
-
-        // 🤖 Istikhdam l-AI mn config/ai.php mni ḥwldnah
-        $aiEvaluator = config('ai.evaluate');
-        $aiResult = $aiEvaluator(
-            $validated['title'],
-            $validated['description'],
-            $validated['location'],
-            $validated['category'],
-            $occupancy
-        );
-
-        $signalement = Signalement::create([
+        Signalement::create([
             'user_id' => auth()->id(),
             'title' => $validated['title'],
             'location' => $validated['location'],
@@ -68,13 +56,9 @@ class SignalementController extends Controller
             'severity' => $validated['severity'],
             'description' => $validated['description'],
             'status' => 'signale',
-            'ai_score' => $aiResult['score'],
-            'ai_diagnostic' => $aiResult['diagnostic'],
-            'ai_recommended_action' => $aiResult['recommended_action'],
-            'ai_estimated_hours' => $aiResult['estimated_hours'],
         ]);
 
-        return redirect()->route('signalements.index');
+        return redirect()->route('signalements.index')->with('success', 'Signalement créé avec succès.');
     }
 
     public function show($id)
@@ -82,6 +66,7 @@ class SignalementController extends Controller
         $signalement = Signalement::with(['user', 'interventions.technicien'])->findOrFail($id);
 
         $user = auth()->user();
+
         if ($user && $user->hasRole('demandeur') && $signalement->user_id !== $user->id) {
             abort(403, 'Accès non autorisé à ce signalement.');
         }
@@ -97,43 +82,15 @@ class SignalementController extends Controller
         return view('signalements.show', compact('signalement'));
     }
 
-    public function retriage($id)
-    {
-        $signalement = Signalement::findOrFail($id);
-
-        // 🤖 Réévaluation mn config/ai.php
-        $aiEvaluator = config('ai.evaluate');
-        $aiResult = $aiEvaluator(
-            $signalement->title,
-            $signalement->description,
-            $signalement->location,
-            $signalement->category,
-            'today'
-        );
-
-        $signalement->update([
-            'ai_score' => $aiResult['score'],
-            'ai_diagnostic' => $aiResult['diagnostic'],
-            'ai_recommended_action' => $aiResult['recommended_action'],
-            'ai_estimated_hours' => $aiResult['estimated_hours'],
-        ]);
-
-        return back()->with('info', "Diagnostic IA réévalué avec succès (Nouveau score : {$aiResult['score']}/100).");
-    }
-
-    // 🗑️ Méthode dyal Suppression khassa b l-Admin
     public function destroy($id)
     {
-        $signalement = Signalement::findOrFail($id);
-
         if (!auth()->user()->hasRole('admin')) {
             abort(403, 'Action non autorisée.');
         }
 
-        // Mḥa l-interventions li m-lssiqin biha lowl bach t-fadi database foreign key error
-        $signalement->interventions()->delete();
+        $signalement = Signalement::findOrFail($id);
 
-        // Mḥa l-signalement
+        $signalement->interventions()->delete();
         $signalement->delete();
 
         return redirect()->route('signalements.index')->with('success', 'Signalement supprimé avec succès.');

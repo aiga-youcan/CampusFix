@@ -1,17 +1,17 @@
 <?php
 
 return [
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'CampusFix'),
     'env' => env('APP_ENV', 'local'),
     'debug' => env('APP_DEBUG', true),
     'url' => env('APP_URL', 'http://localhost'),
     'timezone' => 'UTC',
-    'locale' => 'en',
+    'locale' => 'fr',
     'fallback_locale' => 'en',
     'key' => env('APP_KEY'),
     'cipher' => 'AES-256-CBC',
+
     'providers' => [
-        /* Laravel Framework Service Providers... */
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
@@ -35,8 +35,8 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
-        /* Application Service Providers... */
         App\Providers\RouteServiceProvider::class,
     ],
+
     'aliases' => [],
 ];

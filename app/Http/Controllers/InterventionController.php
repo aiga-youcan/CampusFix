@@ -13,7 +13,6 @@ class InterventionController extends Controller
     {
         $user = Auth::user();
 
-        // Seuls techniciens et admins peuvent intervenir
         if (!$user->hasRole(['technicien', 'admin'])) {
             abort(403, 'Action réservée aux techniciens et administrateurs.');
         }
@@ -27,7 +26,6 @@ class InterventionController extends Controller
 
         $signalement = Signalement::findOrFail($validated['signalement_id']);
 
-        // Créer le log d'intervention
         Intervention::create([
             'signalement_id' => $signalement->id,
             'technicien_id' => $user->id,
@@ -35,8 +33,9 @@ class InterventionController extends Controller
             'duration_minutes' => $validated['duration_minutes'],
         ]);
 
-        // Mettre à jour le statut du signalement
-        $signalement->update(['status' => $validated['status']]);
+        $signalement->update([
+            'status' => $validated['status'],
+        ]);
 
         return redirect()->route('signalements.show', $signalement)
             ->with('success', 'Rapport d\'intervention enregistré et statut mis à jour.');

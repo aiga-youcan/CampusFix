@@ -74,10 +74,7 @@ class DatabaseSeeder extends Seeder
             'category' => 'electricite',
             'severity' => 'critique',
             'status' => 'pris_en_charge',
-            'ai_score' => 95,
-            'ai_diagnostic' => 'Intervention d\'urgence prioritaire requise. Risque élevé sur la sécurité des usagers ou la continuité de service.',
-            'ai_recommended_action' => 'Couper l\'alimentation générale du laboratoire et déployer immédiatement un électricien agréé.',
-            'ai_estimated_hours' => 1.5,
+            
         ]);
 
         Intervention::create([
@@ -95,10 +92,7 @@ class DatabaseSeeder extends Seeder
             'category' => 'plomberie',
             'severity' => 'moyen',
             'status' => 'signale', // 💡 Bddlha men 'en_attente' l 'signale'
-            'ai_score' => 55,
-            'ai_diagnostic' => 'Incident modéré nécessitant une prise en charge dans la journée pour éviter une aggravation.',
-            'ai_recommended_action' => 'Planifier l\'intervention d\'un plombier lors de la prochaine tournée.',
-            'ai_estimated_hours' => 3.0,
+
         ]);
 
         $s3 = Signalement::create([
@@ -109,10 +103,6 @@ class DatabaseSeeder extends Seeder
             'category' => 'mobilier',
             'severity' => 'faible',
             'status' => 'resolu',
-            'ai_score' => 38,
-            'ai_diagnostic' => 'Dysfonctionnement mineur sans risque sécuritaire direct.',
-            'ai_recommended_action' => 'Resserrage et stabilisation du piétement.',
-            'ai_estimated_hours' => 0.5,
         ]);
 
         Intervention::create([

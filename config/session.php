@@ -12,7 +12,7 @@ return [
     'table' => 'sessions',
     'store' => null,
     'lottery' => [2, 100],
-    'cookie' => env('SESSION_COOKIE', Str::slug(env('APP_NAME', 'laravel'), '_').'_session'),
+    'cookie' => env('SESSION_COOKIE', Str::slug(env('APP_NAME', 'campusfix'), '_') . '_session'),
     'path' => '/',
     'domain' => env('SESSION_DOMAIN', null),
     'secure' => env('SESSION_SECURE_COOKIE', false),

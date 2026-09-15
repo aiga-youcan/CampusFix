@@ -4,33 +4,33 @@ $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)
 );
 
-// 💡 Storage w bootstrap f Temp folder
-$storagePath = sys_get_temp_dir() . '/campusfix_storage';
-if (!file_exists($storagePath)) {
-    mkdir($storagePath, 0777, true);
-}
-$app->useStoragePath($storagePath);
+// توجيه الكاش لـ Temp ديال الويندوز باش يبقى المشروع نقي
+$tempDir = sys_get_temp_dir() . '/campusfix_temp';
 
-$bootstrapPath = sys_get_temp_dir() . '/campusfix_bootstrap';
-if (!file_exists($bootstrapPath . '/cache')) {
-    mkdir($bootstrapPath . '/cache', 0777, true);
+if (!is_dir($tempDir . '/cache')) {
+    @mkdir($tempDir . '/cache', 0777, true);
 }
-$app->useBootstrapPath($bootstrapPath);
+if (!is_dir($tempDir . '/storage/framework/views')) {
+    @mkdir($tempDir . '/storage/framework/views', 0777, true);
+    @mkdir($tempDir . '/storage/framework/sessions', 0777, true);
+}
+
+$app->useBootstrapPath($tempDir);
+$app->useStoragePath($tempDir . '/storage');
 
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
     App\Http\Kernel::class
 );
 
-// 💡 Hna rddinaha t-pointi 3la Laravel Core Console Kernel mashi l-fichier l-maḥalli
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
-    \Illuminate\Foundation\Console\Kernel::class
+    Illuminate\Foundation\Console\Kernel::class
 );
 
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
-    \Illuminate\Foundation\Exceptions\Handler::class
+    Illuminate\Foundation\Exceptions\Handler::class
 );
 
 return $app;

@@ -1,19 +1,20 @@
-version: '3.8'
-
 services:
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: docker/Dockerfile
     container_name: campusfix-app
     restart: unless-stopped
     ports:
-      - "8000:80"
+      - "8000:8000"
+    volumes:
+      - ..:/var/www
     environment:
-      - DB_CONNECTION=sqlite
+      DB_CONNECTION: sqlite
     networks:
       - campusfix-network
 
 networks:
   campusfix-network:
     driver: bridge
+

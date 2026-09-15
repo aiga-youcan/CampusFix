@@ -8,18 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class Authenticate
 {
-    public function handle(Request $request, Closure $next, ...$guards)
+    public function handle(Request $request, Closure $next)
     {
-        if (! empty($guards)) {
-            foreach ($guards as $guard) {
-                Auth::shouldUse($guard);
-            }
-        }
-
         if (Auth::check()) {
             return $next($request);
         }
 
-        return redirect()->route('login');
+        return redirect()->route("login");
     }
 }
+

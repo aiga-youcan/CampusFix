@@ -15,13 +15,16 @@
             </p>
         </div>
         <div class="flex items-center space-x-2">
+            <span class="px-2.5 py-1 rounded border text-xs font-semibold uppercase {{ $signalement->severity_color }}">
+                {{ $signalement->severity }}
+            </span>
+
             <span class="px-3 py-1 rounded-full border text-xs font-semibold {{ $signalement->status_color }}">
                 {{ str_replace('_', ' ', $signalement->status) }}
             </span>
 
-            <!-- 🗑️ Boutون Suppression khass b l-Admin -->
             @if(auth()->user()?->hasRole('admin'))
-            <form action="{{ route('signalements.destroy', $signalement->id) }}" method="POST" onsubmit="return confirm('Wach bġiti bṣaḥ t-mḥa had l-signalement?');">
+            <form action="{{ route('signalements.destroy', $signalement->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce signalement ?');">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg text-xs font-semibold transition flex items-center space-x-1 border border-rose-200" title="Supprimer le signalement">
@@ -34,9 +37,7 @@
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Colonne Gauche : Détails & Rapport IA -->
         <div class="lg:col-span-2 space-y-6">
-            <!-- Informations de la panne -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">Détails de l'incident</h2>
                 
@@ -52,71 +53,13 @@
                 </div>
 
                 <div>
-                    <span class="text-slate-400 block font-semibold text-xs uppercase mb-1">Description signalée :</span>
+                    <span class="text-slate-400 block font-semibold text-xs uppercase mb-1">Description :</span>
                     <div class="bg-slate-50 p-4 rounded-xl text-sm text-slate-700 leading-relaxed border border-slate-100">
                         {{ $signalement->description }}
                     </div>
                 </div>
             </div>
 
-            <!-- Carte de Triage IA (CampusAiAgent - Minimal & Pro) -->
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <div class="flex items-center space-x-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                            <i data-lucide="sparkles" class="w-4 h-4"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-sm text-slate-900 tracking-tight">CampusAiAgent — Analyse & Diagnostic</h3>
-                            <span class="text-[11px] text-slate-400">Triage algorithmique multicritère</span>
-                        </div>
-                    </div>
-                    <form method="POST" action="{{ url('/signalements/' . $signalement->id . '/retriage') }}">
-                        @csrf
-                        <button type="submit" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-xs font-semibold text-slate-700 transition flex items-center space-x-1" title="Recalculer le score">
-                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-                            <span>Réévaluer</span>
-                        </button>
-                    </form>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Score d'urgence</span>
-                        <span class="text-xl font-extrabold text-slate-900 mt-0.5 block">
-                            {{ $signalement->ai_score }} / 100
-                        </span>
-                    </div>
-
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Sévérité calculée</span>
-                        <span class="text-xs font-bold uppercase mt-1 px-2 py-0.5 rounded inline-block bg-slate-200 text-slate-700">
-                            {{ $signalement->severity }}
-                        </span>
-                    </div>
-
-                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Délai estimé</span>
-                        <span class="text-xs font-bold text-slate-800 mt-1 block">
-                            ~{{ $signalement->ai_estimated_hours }} heure(s)
-                        </span>
-                    </div>
-                </div>
-
-                <div class="space-y-3 text-xs pt-1">
-                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                        <strong class="text-slate-900 block mb-1 font-semibold">Diagnostic de l'Agent :</strong>
-                        <p class="text-slate-600 leading-relaxed">{{ $signalement->ai_diagnostic ?? 'Analyse standard effectuée.' }}</p>
-                    </div>
-
-                    <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                        <strong class="text-slate-900 block mb-1 font-semibold">Action d'intervention recommandée :</strong>
-                        <p class="text-slate-600 leading-relaxed">{{ $signalement->ai_recommended_action ?? 'Planifier l\'intervention selon les disponibilités.' }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Historique des interventions -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3">Historique des interventions techniques</h2>
 
@@ -139,13 +82,12 @@
             </div>
         </div>
 
-        <!-- Colonne Droite : Formulaire d'action Technicien -->
         <div class="space-y-6">
-            @if(auth()->user()?->hasRole('technicien'))
+            @if(auth()->user()?->hasRole(['technicien', 'admin']))
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
                 <h3 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center space-x-2">
                     <i data-lucide="wrench" class="w-4 h-4 text-amber-600"></i>
-                    <span>Espace Intervention Technicien</span>
+                    <span>Ajouter une intervention</span>
                 </h3>
 
                 <form method="POST" action="{{ route('interventions.store') }}" class="space-y-3 text-xs">
@@ -153,42 +95,52 @@
                     <input type="hidden" name="signalement_id" value="{{ $signalement->id }}">
 
                     <div>
-                        <label class="block font-semibold text-slate-700 uppercase mb-1">Statut après intervention *</label>
+                        <label class="block font-semibold text-slate-700 uppercase mb-1">Nouveau statut *</label>
                         <select name="status" required class="w-full border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500">
-                            <option value="pris_en_charge" {{ $signalement->status == 'pris_en_charge' ? 'selected' : '' }}>Prise en charge (En cours)</option>
-                            <option value="resolu" {{ $signalement->status == 'resolu' ? 'selected' : '' }}>Résolue (Clôturer)</option>
+                            <option value="pris_en_charge" {{ $signalement->status == 'pris_en_charge' ? 'selected' : '' }}>Pris en charge</option>
+                            <option value="resolu" {{ $signalement->status == 'resolu' ? 'selected' : '' }}>Résolu</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block font-semibold text-slate-700 uppercase mb-1">Durée réelle (en minutes) *</label>
+                        <label class="block font-semibold text-slate-700 uppercase mb-1">Durée (minutes) *</label>
                         <input type="number" name="duration_minutes" value="30" min="5" max="1440" required
                                class="w-full border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500">
                     </div>
 
                     <div>
-                        <label class="block font-semibold text-slate-700 uppercase mb-1">Rapport d'intervention & Pièces *</label>
+                        <label class="block font-semibold text-slate-700 uppercase mb-1">Rapport d'intervention *</label>
                         <textarea name="notes" rows="4" required
                                   class="w-full border border-slate-300 rounded-lg p-2 text-xs focus:ring-2 focus:ring-blue-500"
-                                  placeholder="Indiquez les manipulations réalisées, pièces remplacées ou mesures prises..."></textarea>
+                                  placeholder="Détaillez le travail effectué..."></textarea>
                     </div>
 
-                    <button type="submit" class="w-full py-2 bg-amber-600 hover:bg-amber-700 text-white font-semibold rounded-lg shadow-sm transition">
+                    <button type="submit" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition">
                         Enregistrer l'intervention
                     </button>
                 </form>
             </div>
             @endif
 
-            <!-- Résumé des informations rapides -->
-            <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 text-xs space-y-3">
-                <span class="font-bold text-slate-800 uppercase tracking-wider block">Rappel d'intégrité</span>
-                <p class="text-slate-600 leading-relaxed">
-                    Toutes les actions sont tracées dans la base de données relationnelle avec contraintes d'intégrité référentielle en cascade.
-                </p>
-                <div class="pt-2 border-t border-slate-200">
-                    <span class="text-slate-500 block">ID Signalement : #{{ $signalement->id }}</span>
-                    <span class="text-slate-500 block">Dernière mise à jour : {{ $signalement->updated_at?->diffForHumans() ?? 'Récemment' }}</span>
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm text-xs space-y-2">
+                <span class="font-bold text-slate-800 uppercase tracking-wider block">Informations ticket</span>
+                <div class="space-y-1.5 text-slate-600 pt-2 border-t border-slate-100">
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">ID :</span>
+                        <span class="font-mono">#{{ $signalement->id }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Demandeur :</span>
+                        <span>{{ $signalement->user?->name ?? 'N/A' }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Créé le :</span>
+                        <span>{{ $signalement->created_at?->format('d/m/Y') }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-slate-400">Dernière mise à jour :</span>
+                        <span>{{ $signalement->updated_at?->diffForHumans() }}</span>
+                    </div>
                 </div>
             </div>
         </div>

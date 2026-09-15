@@ -1,8 +1,7 @@
 {
     "name": "campusfix/platform",
     "type": "project",
-    "description": "CampusFix - Plateforme de gestion de maintenance avec IA Triage et RBAC Laratrust",
-    "keywords": ["laravel", "framework", "maintenance", "ai-agent", "laratrust"],
+    "description": "CampusFix Platform",
     "license": "MIT",
     "require": {
         "php": "^8.2",
@@ -40,12 +39,7 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true,
-        "policy": {
-            "advisories": {
-                "block": false
-            }
-        }
+        "sort-packages": true
     },
     "minimum-stability": "stable",
     "prefer-stable": true

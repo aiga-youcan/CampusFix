@@ -5,15 +5,14 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-xl font-bold text-slate-900">Registre des Signalements</h1>
-            <p class="text-xs text-slate-500 mt-0.5">Filtrage multicritère et supervision des pannes</p>
+            <p class="text-xs text-slate-500 mt-0.5">Filtrage et supervision des pannes</p>
         </div>
-        <a href="{{ route('signalements.create') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold shadow-sm transition flex items-center space-x-2 self-start">
+        <a href="{{ route('signalements.create') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold shadow-sm transition flex items-center space-x-2 self-start">
             <i data-lucide="plus" class="w-4 h-4"></i>
             <span>Déclarer une panne</span>
         </a>
     </div>
 
-    <!-- Barre de Filtrage -->
     <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
         <form method="GET" action="{{ route('signalements.index') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
             <div>
@@ -38,12 +37,12 @@
             </div>
 
             <div>
-                <label class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Sévérité (IA)</label>
+                <label class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Sévérité</label>
                 <select name="severity" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
                     <option value="">Toutes les sévérités</option>
-                    <option value="critique" {{ request('severity') == 'critique' ? 'selected' : '' }}>Critique (&ge; 70)</option>
-                    <option value="moyen" {{ request('severity') == 'moyen' ? 'selected' : '' }}>Moyen (40-69)</option>
-                    <option value="faible" {{ request('severity') == 'faible' ? 'selected' : '' }}>Faible (&lt; 40)</option>
+                    <option value="critique" {{ request('severity') == 'critique' ? 'selected' : '' }}>Critique</option>
+                    <option value="moyen" {{ request('severity') == 'moyen' ? 'selected' : '' }}>Moyen</option>
+                    <option value="faible" {{ request('severity') == 'faible' ? 'selected' : '' }}>Faible</option>
                 </select>
             </div>
 
@@ -56,7 +55,6 @@
         </form>
     </div>
 
-    <!-- Table -->
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse text-sm">
@@ -66,21 +64,21 @@
                         <th class="py-3 px-4">Titre & Lieu</th>
                         <th class="py-3 px-4">Demandeur</th>
                         <th class="py-3 px-4">Catégorie</th>
-                        <th class="py-3 px-4">Score IA</th>
+                        <th class="py-3 px-4">Sévérité</th>
                         <th class="py-3 px-4">Statut</th>
                         <th class="py-3 px-4 text-right">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($signalements as $s)
-                    <tr class="hover:bg-slate-50/80 transition">
+                    <tr class="hover:bg-slate-50 transition">
                         <td class="py-3 px-4 text-xs font-mono text-slate-400">#{{ $s->id }}</td>
                         <td class="py-3 px-4">
                             <div class="font-semibold text-slate-900">{{ $s->title }}</div>
                             <div class="text-xs text-slate-500">{{ $s->location }}</div>
                         </td>
                         <td class="py-3 px-4 text-xs text-slate-700">
-                            {{ $s->user->name }}
+                            {{ $s->user?->name ?? 'Demandeur' }}
                         </td>
                         <td class="py-3 px-4">
                             <span class="text-xs font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded">
@@ -88,10 +86,7 @@
                             </span>
                         </td>
                         <td class="py-3 px-4">
-                            <span class="font-bold text-xs {{ $s->ai_score >= 70 ? 'text-rose-600' : ($s->ai_score >= 40 ? 'text-amber-600' : 'text-slate-600') }}">
-                                {{ $s->ai_score }}/100
-                            </span>
-                            <span class="text-[10px] px-1.5 py-0.5 rounded border uppercase font-semibold {{ $s->severity_color }} ml-1">
+                            <span class="text-[10px] px-2 py-0.5 rounded border uppercase font-semibold {{ $s->severity_color }}">
                                 {{ $s->severity }}
                             </span>
                         </td>
@@ -102,13 +97,12 @@
                         </td>
                         <td class="py-3 px-4 text-right">
                             <div class="flex items-center justify-end space-x-1.5">
-                                <a href="{{ route('signalements.show', $s) }}" class="px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-semibold transition">
+                                <a href="{{ route('signalements.show', $s->id) }}" class="px-3 py-1 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg text-xs font-semibold transition">
                                     Gérer
                                 </a>
 
-                                <!-- 🗑️ Bouton Suppression khass b l-Admin -->
                                 @if(auth()->user()?->hasRole('admin'))
-                                <form action="{{ route('signalements.destroy', $s->id) }}" method="POST" onsubmit="return confirm('Wach bġiti bṣaḥ t-mḥa had l-signalement?');" class="inline">
+                                <form action="{{ route('signalements.destroy', $s->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce signalement ?');" class="inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-lg transition" title="Supprimer">
