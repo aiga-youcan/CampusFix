@@ -19,64 +19,7 @@
         </div>
     </div>
 
-    <!-- Alertes -->
-    <?php if($user->hasRole(['technicien', 'admin']) && $notifications->count() > 0): ?>
-    <div class="bg-white border border-slate-200 rounded-xl p-5">
-        <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
-            <div class="flex items-center space-x-2">
-                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-700">Pannes en attente d'intervention</h2>
-            </div>
-            <div class="flex items-center space-x-2">
-                <span class="text-xs text-slate-500 font-medium"><?php echo e($notifications->count()); ?> non traitée(s)</span>
-                <form method="POST" action="<?php echo e(route('notifications.markAllRead')); ?>">
-                    <?php echo csrf_field(); ?>
-                    <button type="submit" class="text-[11px] text-slate-400 hover:text-slate-700 underline">
-                        Tout marquer lu
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            <?php $__currentLoopData = $notifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notif): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <div class="p-3.5 rounded-lg border border-slate-200 bg-slate-50/50 flex flex-col justify-between hover:bg-white hover:border-slate-300 transition">
-                <div>
-                    <div class="flex items-center justify-between text-xs mb-1">
-                        <span class="text-[10px] font-medium px-1.5 py-0.2 rounded border uppercase
-                            <?php echo e($notif->severity == 'critique' ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-white text-slate-700 border-slate-200'); ?>">
-                            <?php echo e($notif->severity); ?>
-
-                        </span>
-                        <span class="text-[10px] text-slate-400 font-mono">
-                            <?php echo e($notif->created_at?->diffForHumans() ?? 'Récemment'); ?>
-
-                        </span>
-                    </div>
-                    <div class="font-medium text-slate-900 text-xs truncate mt-1"><?php echo e($notif->title); ?></div>
-                    <div class="text-[11px] text-slate-500 mt-0.5">
-                        📍 <?php echo e($notif->location); ?> • Par <?php echo e($notif->user?->name ?? 'Demandeur'); ?>
-
-                    </div>
-                </div>
-
-                <div class="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-between">
-                    <form method="POST" action="<?php echo e(route('notifications.markRead', $notif->id)); ?>">
-                        <?php echo csrf_field(); ?>
-                        <button type="submit" class="text-[10px] text-slate-400 hover:text-slate-700 font-medium">
-                            Marquer lu
-                        </button>
-                    </form>
-                    <a href="<?php echo e(url('/signalements/' . $notif->id)); ?>" class="text-xs font-medium text-slate-900 hover:underline flex items-center space-x-1">
-                        <span>Traiter</span>
-                        <i data-lucide="arrow-right" class="w-3 h-3"></i>
-                    </a>
-                </div>
-            </div>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </div>
-    </div>
-    <?php endif; ?>
+    
 
     <!-- 4 Cartes KPIs Standard (Zéro IA) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
