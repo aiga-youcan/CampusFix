@@ -1,7 +1,8 @@
 {
     "name": "campusfix/platform",
     "type": "project",
-    "description": "CampusFix Platform",
+    "description": "CampusFix - Plateforme de gestion de maintenance avec IA Triage et RBAC Laratrust",
+    "keywords": ["laravel", "framework", "maintenance", "ai-agent", "laratrust"],
     "license": "MIT",
     "require": {
         "php": "^8.2",

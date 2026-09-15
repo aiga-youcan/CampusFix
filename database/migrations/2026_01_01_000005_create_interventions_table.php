@@ -10,10 +10,11 @@ return new class extends Migration
     {
         Schema::create('interventions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('signalement_id')->constrained()->onDelete('cascade');
+            $table->foreignId('signalement_id')->constrained('signalements')->onDelete('cascade');
             $table->foreignId('technicien_id')->constrained('users')->onDelete('cascade');
             $table->text('notes');
             $table->integer('duration_minutes')->default(30);
+            $table->string('status')->default('termine');
             $table->timestamps();
         });
     }

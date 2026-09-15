@@ -4,112 +4,78 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Salle;
 use App\Models\Signalement;
 use App\Models\Intervention;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Création des Rôles Laratrust
+        // 1. Initialisation des Rôles RBAC
         $adminRole = Role::firstOrCreate(['name' => 'admin'], [
             'display_name' => 'Administrateur',
-            'description' => 'Gestion globale du système et supervision'
+            'description' => 'Supervision globale du campus et gestion des droits'
         ]);
 
         $techRole = Role::firstOrCreate(['name' => 'technicien'], [
             'display_name' => 'Technicien de Maintenance',
-            'description' => 'Interventions sur le terrain et résolution des pannes'
+            'description' => 'Prise en charge et exécution des interventions techniques'
         ]);
 
         $demandeurRole = Role::firstOrCreate(['name' => 'demandeur'], [
             'display_name' => 'Demandeur',
-            'description' => 'Étudiant ou employé signalant des pannes'
+            'description' => 'Utilisateur déclarant des incidents sur le campus'
         ]);
 
-        // 2. Création des Utilisateurs types
-        $admin = User::firstOrCreate(['email' => 'admin@campusfix.test'], [
-            'name' => 'Directeur Administratif',
+        // 2. Utilisateurs de test officiels
+        $admin = User::firstOrCreate(['email' => 'admin@estfbs.usms.ac.ma'], [
+            'name' => 'Direction EST FBS (Dr. Alami)',
             'password' => Hash::make('password'),
         ]);
         if (!$admin->hasRole('admin')) {
-            $admin->addRole($adminRole);
+            $admin->addRole('admin');
         }
 
-        $technicien = User::firstOrCreate(['email' => 'technicien@campusfix.test'], [
+        $technicien = User::firstOrCreate(['email' => 'technicien@estfbs.usms.ac.ma'], [
             'name' => 'Karim Alami (Technicien)',
             'password' => Hash::make('password'),
         ]);
         if (!$technicien->hasRole('technicien')) {
-            $technicien->addRole($techRole);
+            $technicien->addRole('technicien');
         }
 
-        $etudiant = User::firstOrCreate(['email' => 'etudiant@campusfix.test'], [
-            'name' => 'Youssef Bennani (Étudiant)',
+        $etudiant = User::firstOrCreate(['email' => 'etudiant@usms.ma'], [
+            'name' => 'Rida Sabrar (Étudiant)',
             'password' => Hash::make('password'),
         ]);
         if (!$etudiant->hasRole('demandeur')) {
-            $etudiant->addRole($demandeurRole);
+            $etudiant->addRole('demandeur');
         }
 
-        // 💡 3. Creyi Users 3wadiyin bash l-factory t-stakhdmhum
-        $otherUsers = User::factory(5)->create()->each(function ($user) use ($demandeurRole) {
-            $user->addRole($demandeurRole);
-        });
+        // 3. Génération des Salles via Factory
+        $salles = Salle::factory()->count(12)->create();
 
-        // 💡 4. Creyi Signalements b factory b t-rtib s-sḥiḥ
-        Signalement::factory(15)->create([
-            'user_id' => $otherUsers->random()->id,
-        ]);
+        // 4. Génération d'utilisateurs demandeurs supplémentaires via Factory
+        $demandeurs = User::factory()->count(6)->create();
+        foreach ($demandeurs as $dem) {
+            $dem->addRole('demandeur');
+        }
 
-        // 5. Exemples de Signalements fixes avec Scores IA
-        $s1 = Signalement::create([
-            'user_id' => $etudiant->id,
-            'title' => 'Court-circuit et étincelles au tableau électrique',
-            'description' => 'Des étincelles et une forte odeur de brûlé proviennent du tableau dans le laboratoire de chimie.',
-            'location' => 'Laboratoire de Chimie - Bâtiment C',
-            'category' => 'electricite',
-            'severity' => 'critique',
-            'status' => 'pris_en_charge',
-            
-        ]);
+        // 5. Génération des Signalements via Factory
+        $signalements = Signalement::factory()->count(20)->create();
 
-        Intervention::create([
-            'signalement_id' => $s1->id,
-            'technicien_id' => $technicien->id,
-            'notes' => 'Disjoncteur différentiel coupé à titre préventif. Remplacement des fusibles haute tension en cours.',
-            'duration_minutes' => 45,
-        ]);
-
-        $s2 = Signalement::create([
-            'user_id' => $etudiant->id,
-            'title' => 'Fuite d\'eau sous l\'évier des sanitaires',
-            'description' => 'Un écoulement d\'eau constant sous le robinet provoque une flaque au sol près des toilettes.',
-            'location' => 'Sanitaires 1er étage - Bâtiment A',
-            'category' => 'plomberie',
-            'severity' => 'moyen',
-            'status' => 'signale', // 💡 Bddlha men 'en_attente' l 'signale'
-
-        ]);
-
-        $s3 = Signalement::create([
-            'user_id' => $etudiant->id,
-            'title' => 'Pied de table métallique desserré',
-            'description' => 'Une table bancale dans la rangée 4 de l\'amphithéâtre.',
-            'location' => 'Amphithéâtre 1',
-            'category' => 'mobilier',
-            'severity' => 'faible',
-            'status' => 'resolu',
-        ]);
-
-        Intervention::create([
-            'signalement_id' => $s3->id,
-            'technicien_id' => $technicien->id,
-            'notes' => 'Vis de serrage resserrées et embout plastique remis en place. Table de nouveau opérationnelle.',
-            'duration_minutes' => 15,
-        ]);
+        // 6. Génération des Interventions réelles via Factory pour les signalements en cours ou résolus
+        foreach ($signalements as $sig) {
+            if (in_array($sig->status, ['pris_en_charge', 'resolu'])) {
+                Intervention::factory()->create([
+                    'signalement_id' => $sig->id,
+                    'technicien_id' => $technicien->id,
+                    'status' => 'termine',
+                ]);
+            }
+        }
     }
 }

@@ -14,10 +14,7 @@ class Intervention extends Model
         'technicien_id',
         'notes',
         'duration_minutes',
-    ];
-
-    protected $casts = [
-        'duration_minutes' => 'integer',
+        'status',
     ];
 
     public function signalement()

@@ -2,42 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Intervention;
 use App\Models\Signalement;
+use App\Models\Intervention;
+use App\Services\InterventionService;
+use App\Services\SignalementService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class InterventionController extends Controller
 {
+    protected InterventionService $interventionService;
+    protected SignalementService $signalementService;
+
+    public function __construct(InterventionService $interventionService, SignalementService $signalementService)
+    {
+        $this->interventionService = $interventionService;
+        $this->signalementService = $signalementService;
+    }
+
     public function store(Request $request)
     {
-        $user = Auth::user();
-
-        if (!$user->hasRole(['technicien', 'admin'])) {
-            abort(403, 'Action réservée aux techniciens et administrateurs.');
-        }
-
         $validated = $request->validate([
             'signalement_id' => 'required|exists:signalements,id',
             'notes' => 'required|string|min:5',
-            'duration_minutes' => 'required|integer|min:5|max:1440',
+            'duration_minutes' => 'required|integer|min:5|max:480',
             'status' => 'required|in:pris_en_charge,resolu',
         ]);
 
-        $signalement = Signalement::findOrFail($validated['signalement_id']);
+        $signalement = $this->signalementService->getById((int) $validated['signalement_id']);
 
-        Intervention::create([
-            'signalement_id' => $signalement->id,
-            'technicien_id' => $user->id,
-            'notes' => $validated['notes'],
-            'duration_minutes' => $validated['duration_minutes'],
-        ]);
+        // Vérification d'autorisation Policy
+        $this->authorize('intervene', $signalement);
 
-        $signalement->update([
-            'status' => $validated['status'],
-        ]);
+        $this->interventionService->recordIntervention(auth()->user(), $signalement, $validated);
 
-        return redirect()->route('signalements.show', $signalement)
-            ->with('success', 'Rapport d\'intervention enregistré et statut mis à jour.');
+        return redirect()->route('signalements.show', $signalement->id)
+            ->with('success', 'Intervention enregistrée avec succès ! Statut mis à jour.');
     }
 }

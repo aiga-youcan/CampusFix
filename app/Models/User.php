@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Laratrust\Contracts\LaratrustUser;
 use Laratrust\Traits\HasRolesAndPermissions;
 
 class User extends Authenticatable implements LaratrustUser
 {
-    use HasFactory, Notifiable, HasRolesAndPermissions;
+    use HasApiTokens, HasFactory, Notifiable, HasRolesAndPermissions;
 
     protected $fillable = [
         'name',
@@ -25,6 +26,7 @@ class User extends Authenticatable implements LaratrustUser
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     public function signalements()
@@ -37,7 +39,7 @@ class User extends Authenticatable implements LaratrustUser
         return $this->hasMany(Intervention::class, 'technicien_id');
     }
 
-    public function getRoleNameAttribute()
+    public function getRoleNameAttribute(): string
     {
         return $this->roles->first()?->name ?? 'demandeur';
     }

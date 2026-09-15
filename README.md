@@ -1,89 +1,134 @@
-# CampusFix — Plateforme de Maintenance & Moteur d'IA Triage
+# CampusFix — Plateforme de Gestion de Maintenance
 
-Projet fil rouge développé sous **Laravel 10+ (PHP 8.2+)**, conteneurisé sous **Docker** et exploitant **MySQL 8.0**, le système de rôles/permissions **Laratrust (RBAC)** et un agent d'intelligence artificielle de triage technique (**CampusAiAgent**).
-
----
-
-## 🎯 1. Fonctionnalités Principales
-
-- **Contrôle d'Accès basé sur les Rôles (RBAC)** :
-  - **Demandeur** (Étudiant / Personnel) : déclaration de pannes, suivi en temps réel de ses signalements.
-  - **Technicien** : consultation des pannes assignées, prise en charge immédiate, saisie des rapports d'intervention et durée.
-  - **Administrateur** : supervision globale, métriques en temps réel, indicateurs clés de performance (KPIs).
-- **Agent IA Triage (`CampusAiAgent`)** :
-  - Calcul dynamique d'un **Score d'Urgence (0 à 100)** basé sur la sémantique de l'incident (mots-clés de criticité, danger, fuite, feu, court-circuit).
-  - Facteur de pondération selon la sensibilité du lieu (Laboratoire, Datacenter, Amphithéâtre vs couloir).
-  - Détermination de la sévérité (`faible`, `moyen`, `critique`), estimation du temps d'intervention et recommandations d'action.
-  - Bouton de réévaluation en temps réel.
-- **Conception Merise & Intégrité** :
-  - Modèle Conceptuel (MCD) et Logique (MLD) normalisés.
-  - Clés étrangères avec contraintes `ON DELETE CASCADE` pour assurer la cohérence des données.
+Projet développé sous **Laravel 10+ (PHP 8.2+)**, conteneurisé avec **Docker (MySQL 8.0, Nginx, PHP-FPM)**, intégrant le système d'authentification **Laravel Breeze**, la gestion des autorisations via **Gates, Policies & Middleware**, une architecture en couches (**Controller -> Service -> Model**), et des tests automatisés avec **Factories & Seeders**.
 
 ---
 
-## 🚀 2. Démarrage Rapide avec Docker
+## 🎯 Architecture & Fonctionnalités Clés
 
-### Prérequis :
-- Docker et Docker Compose installés.
+1. **Architecture en Couches (Controller -> Service -> Model)** :
+   - **Services métier dédiés** (`SignalementService`, `InterventionService`, `SalleService`, `DashboardService`) pour isoler la logique métier des contrôleurs.
+   - Contrôleurs allégés et focalisés sur la gestion des requêtes HTTP et des réponses.
 
-### Lancement en 1 commande :
+2. **Authentification & Sécurité (Laravel Breeze)** :
+   - Flux d'authentification complet Breeze : Connexion, Inscription, Déconnexion et Réinitialisation de mot de passe.
+   - Protection CSRF, hachage bcrypt/Argon2id des mots de passe, et throttling contre le brute-force (`RateLimiter`).
+
+3. **Contrôle d'Accès & Autorisations (Gates, Policies, Middleware)** :
+   - **Policies** : `SignalementPolicy`, `InterventionPolicy`, `SallePolicy` définissant finement les droits CRUD par entité.
+   - **Middleware** : `RoleMiddleware` filtrant les routes selon les rôles (`admin`, `technicien`, `demandeur`).
+   - **Gates** : Vérifications directes (`admin-only`, `tech-access`, `intervene`).
+
+4. **Base de Données Relationnelle MySQL & Migrations** :
+   - **Zéro fichier SQLite**, **zéro dump SQL statique** : initialisation 100% via les **Migrations Laravel**.
+   - Clés étrangères avec contraintes d'intégrité référentielle (`ON DELETE CASCADE`, `ON DELETE SET NULL`).
+
+5. **Données de Démonstration via Factories & DatabaseSeeder** :
+   - `UserFactory`, `SalleFactory`, `SignalementFactory`, `InterventionFactory` utilisant **Faker**.
+   - Commande unique d'initialisation : `php artisan migrate:fresh --seed`.
+
+6. **Conteneurisation Docker & Structure `docker/`** :
+   - L'ensemble des fichiers Docker et dépendances frontend (`package.json`, `Dockerfile`, `docker-compose.yml`, configs Nginx/PHP) sont organisés dans le dossier `docker/`.
+
+---
+
+## 🚀 Démarrage Rapide
+
+### Option A : Via Docker (Recommandé)
+
 ```bash
-docker-compose up -d --build
+# 1. Lancer les conteneurs (App, Nginx, MySQL, PhpMyAdmin)
+docker compose up -d --build
+
+# 2. Exécuter les migrations et le seeder (qui appelle les factories)
+docker compose exec app php artisan migrate:fresh --seed
 ```
 
-L'application démarre alors automatiquement :
-- **Application Web** : [http://localhost:8000](http://localhost:8000)
-- **phpMyAdmin** : [http://localhost:8080](http://localhost:8080) (Serveur: `mysql`, Utilisateur: `campus_user`, Mot de passe: `secret_password`)
-- **Base de données MySQL** : Port `3306` (initialisée automatiquement avec le dump `database/dump/campusfix_database.sql`).
+- Application Web : **http://localhost:8000**
+- PhpMyAdmin : **http://localhost:8080** (User: `campus_user`, Pass: `secret_password`)
 
 ---
 
-## 🛠️ 3. Démarrage Local (Sans Docker)
+### Option B : En Local (PHP + Composer)
 
 ```bash
-# 1. Installer les dépendances PHP
+# 1. Installer les dépendances PHP et Node
 composer install
+npm install && npm run build
 
-# 2. Configurer l'environnement
-cp .env.example .env
+# 2. Configurer l'environnement (.env déjà prêt pour MySQL)
 php artisan key:generate
 
-# 3. Exécuter les migrations et le Seeder (avec données de test)
+# 3. Lancer les migrations et le seeder
 php artisan migrate:fresh --seed
 
-# 4. Lancer le serveur local
+# 4. Démarrer le serveur de développement
 php artisan serve
 ```
 
 ---
 
-## 🔑 4. Comptes de Démonstration (Soutenance)
+## 👥 Comptes de Test Pré-configurés
 
-Tous les comptes partagent le mot de passe : `password`
+Tous les comptes utilisent le mot de passe : `password`
 
-| Rôle | Adresse Email | Mot de passe | Permissions |
-| :--- | :--- | :--- | :--- |
-| **Administrateur** | `admin@campusfix.test` | `password` | Supervision globale, KPIs, tous les signalements |
-| **Technicien** | `technicien@campusfix.test` | `password` | Prise en charge des pannes, saisie des interventions |
-| **Demandeur** | `etudiant@campusfix.test` | `password` | Création de signalement, consultation de ses tickets |
+| Rôle | Email | Droits & Accès |
+| :--- | :--- | :--- |
+| **Direction (Admin)** | `admin@estfbs.usms.ac.ma` | Supervision globale, gestion complète des signalements, interventions et salles |
+| **Technicien** | `technicien@estfbs.usms.ac.ma` | Prise en charge des pannes, saisie des interventions et durées |
+| **Étudiant (Demandeur)** | `etudiant@usms.ma` | Déclaration d'incidents, suivi de l'état de ses signalements |
 
 ---
 
-## 🧪 5. Exécution des Tests Automatisés
+## 🏛️ Structure des Couches du Projet
 
-```bash
-php artisan test
 ```
-
----
-
-## 📂 6. Structure de la Base de Données Exportée
-
-Le fichier SQL complet est disponible à l'emplacement suivant :
-`database/dump/campusfix_database.sql`
-
-Tables principales :
-- `users` : comptes utilisateurs et identifiants hachés.
-- `roles` & `role_user` : gestion des rôles multi-niveaux Laratrust.
-- `signalements` : tickets de panne avec colonnes IA (`ai_score`, `ai_diagnostic`, `ai_recommended_action`, `ai_estimated_hours`).
-- `interventions` : compte-rendus techniques d'intervention.
+campusfix/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Auth/ (Breeze Controllers)
+│   │   │   ├── DashboardController.php
+│   │   │   ├── SignalementController.php
+│   │   │   └── InterventionController.php
+│   │   ├── Middleware/
+│   │   │   └── RoleMiddleware.php
+│   │   └── Requests/Auth/
+│   ├── Models/
+│   │   ├── User.php
+│   │   ├── Salle.php
+│   │   ├── Signalement.php
+│   │   └── Intervention.php
+│   ├── Policies/
+│   │   ├── SignalementPolicy.php
+│   │   ├── InterventionPolicy.php
+│   │   └── SallePolicy.php
+│   └── Services/
+│       ├── SignalementService.php
+│       ├── InterventionService.php
+│       ├── SalleService.php
+│       └── DashboardService.php
+├── database/
+│   ├── factories/
+│   │   ├── UserFactory.php
+│   │   ├── SalleFactory.php
+│   │   ├── SignalementFactory.php
+│   │   └── InterventionFactory.php
+│   ├── migrations/
+│   └── seeders/
+│       └── DatabaseSeeder.php
+├── docker/
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   ├── package.json
+│   ├── nginx/default.conf
+│   └── php/local.ini
+├── resources/views/
+│   ├── auth/ (Breeze Views)
+│   ├── dashboard/
+│   ├── signalements/
+│   └── layouts/
+└── routes/
+    ├── web.php
+    └── auth.php
+```

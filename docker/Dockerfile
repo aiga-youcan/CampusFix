@@ -1,23 +1,31 @@
-FROM php:8.2-cli-alpine
+FROM php:8.2-fpm
 
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
+    libonig-dev \
     libxml2-dev \
+    libzip-dev \
     zip \
     unzip \
-    oniguruma-dev \
-    sqlite-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring bcmath
+    default-mysql-client \
+    nodejs \
+    npm
 
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
 COPY . /var/www
 
-EXPOSE 8000
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache \
+    && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-CMD php artisan serve --host=0.0.0.0 --port=8000
+EXPOSE 9000
 
+CMD ["php-fpm"]

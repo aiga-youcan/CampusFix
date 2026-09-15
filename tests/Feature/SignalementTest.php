@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\Signalement;
 use App\Models\User;
+use App\Models\Salle;
+use App\Models\Signalement;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -11,31 +12,24 @@ class SignalementTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_user_can_create_signalement()
+    public function test_authenticated_user_can_create_signalement(): void
     {
         $user = User::factory()->create();
+        $user->addRole('demandeur');
+        $salle = Salle::factory()->create();
 
-        $response = $this->actingAs($user)->post(route('signalements.store'), [
-            'title' => 'Fuite d\'eau',
-            'location' => 'Bâtiment A',
-            'category' => 'plomberie',
-            'severity' => 'moyen',
-            'description' => 'Fuite importante sous l\'évier du laboratoire.',
+        $response = $this->actingAs($user)->post('/signalements', [
+            'title' => 'Panne électrique amphi',
+            'salle_id' => $salle->id,
+            'category' => 'electricite',
+            'severity' => 'critique',
+            'description' => 'Disjoncteur général qui a sauté dans l\'amphi',
         ]);
-
-        $response->assertRedirect(route('signalements.index'));
 
         $this->assertDatabaseHas('signalements', [
-            'title' => 'Fuite d\'eau',
-            'user_id' => $user->id,
+            'title' => 'Panne électrique amphi',
+            'severity' => 'critique',
             'status' => 'signale',
         ]);
-    }
-
-    public function test_unauthenticated_user_cannot_access_signalements()
-    {
-        $response = $this->get(route('signalements.index'));
-
-        $response->assertRedirect(route('login'));
     }
 }

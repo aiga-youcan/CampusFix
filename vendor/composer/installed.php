@@ -3,7 +3,7 @@
         'name' => 'campusfix/platform',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '1239dc4fbe1e946505d98f7816c08b8ed570fa55',
+        'reference' => '4998a35b090ce41b70bb8138a4f6f4b5a511fda5',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -22,7 +22,7 @@
         'campusfix/platform' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '1239dc4fbe1e946505d98f7816c08b8ed570fa55',
+            'reference' => '4998a35b090ce41b70bb8138a4f6f4b5a511fda5',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

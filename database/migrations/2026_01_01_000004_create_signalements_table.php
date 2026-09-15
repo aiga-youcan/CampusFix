@@ -10,20 +10,15 @@ return new class extends Migration
     {
         Schema::create('signalements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('salle_id')->nullable()->constrained('salles')->onDelete('set null');
             $table->string('title');
             $table->text('description');
             $table->string('location');
-            $table->enum('category', ['plomberie', 'electricite', 'mobilier', 'autre'])->default('autre');
-            $table->enum('severity', ['faible', 'moyen', 'critique'])->default('faible');
+            $table->enum('category', ['plomberie', 'electricite', 'mobilier', 'reseau', 'autre'])->default('autre');
+            $table->enum('severity', ['faible', 'moyen', 'critique'])->default('moyen');
             $table->enum('status', ['signale', 'pris_en_charge', 'resolu'])->default('signale');
-
-            // Métadonnées de l'Agent IA Triage
-            $table->integer('ai_score')->default(10);
-            $table->text('ai_diagnostic')->nullable();
-            $table->text('ai_recommended_action')->nullable();
-            $table->decimal('ai_estimated_hours', 4, 1)->default(2.0);
-
+            $table->string('photo_path')->nullable();
             $table->timestamps();
         });
     }
