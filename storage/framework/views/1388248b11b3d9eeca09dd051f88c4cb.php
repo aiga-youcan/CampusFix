@@ -8,7 +8,7 @@
         <div>
             <h1 class="text-lg font-semibold text-slate-900">Espace de travail — <?php echo e($user->name); ?></h1>
             <p class="text-xs text-slate-500 mt-0.5">
-                Profil <span class="capitalize font-medium text-slate-700"><?php echo e($user->role_name); ?></span> • Supervision des infrastructures de l'EST Fquih Ben Salah.
+                Profil <span class="capitalize font-medium text-slate-700"><?php echo e($user->role_name); ?></span> • Supervision des infrastructures de l'CC Fquih Ben Salah.
             </p>
         </div>
         <div>

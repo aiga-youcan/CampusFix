@@ -5,7 +5,7 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <h1 class="text-lg font-semibold text-slate-900">Registre des Signalements</h1>
-            <p class="text-xs text-slate-500 mt-0.5">Supervision et filtrage des pannes déclarées à l'EST Fquih Ben Salah.</p>
+            <p class="text-xs text-slate-500 mt-0.5">Supervision et filtrage des pannes déclarées à l'CC Fquih Ben Salah.</p>
         </div>
         <a href="<?php echo e(route('signalements.create')); ?>" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-medium transition flex items-center space-x-1.5 self-start">
             <i data-lucide="plus" class="w-3.5 h-3.5"></i>

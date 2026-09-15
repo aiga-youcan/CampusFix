@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'CampusFix | EST Fquih Ben Salah')</title>
+    <title>@yield('title', 'CampusFix | CC Fquih Ben Salah')</title>
     
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
 
@@ -36,7 +36,7 @@
                             Campus<span class="text-indigo-600 ml-0.5">Fix</span>
                         </span>
                         <span class="block text-[10px] text-slate-400 font-semibold tracking-wider uppercase">
-                            EST Fquih Ben Salah
+                            CC Fquih Ben Salah
                         </span>
                     </div>
                 </a>

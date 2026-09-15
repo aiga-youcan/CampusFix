@@ -7,7 +7,7 @@
             <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
             <span>Retour au registre</span>
         </a>
-        <h1 class="text-lg font-semibold text-slate-900">Déclarer un Incident — EST Fquih Ben Salah</h1>
+        <h1 class="text-lg font-semibold text-slate-900">Déclarer un Incident — CC Fquih Ben Salah</h1>
         <p class="text-xs text-slate-500">Renseignez les détails de la panne pour planifier l'intervention technique.</p>
     </div>
 
