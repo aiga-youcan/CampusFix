@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
             $admin->addRole('admin');
         }
 
-        $technicien = User::firstOrCreate(['email' => 'technicien@estfbs.usms.ac.ma'], [
+        $technicien = User::firstOrCreate(['email' => 'technicien@ccfbs.usms.ac.ma'], [
             'name' => 'Karim Alami (Technicien)',
             'password' => Hash::make('password'),
         ]);
