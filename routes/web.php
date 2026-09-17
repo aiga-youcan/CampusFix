@@ -41,5 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/signalements/{id}', [SignalementController::class, 'show'])->name('signalements.show');
 
     // Interventions (Sécurisées par Policy dans le contrôleur)
-    Route::post('/interventions', [InterventionController::class, 'store'])->name('interventions.store');
+    Route::post('/interventions', [InterventionController::class, 'store'])
+    ->middleware('role:technicien')
+    ->name('interventions.store');
 });

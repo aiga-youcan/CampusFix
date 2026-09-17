@@ -32,8 +32,12 @@ class SignalementPolicy
         return $user->hasRole('admin');
     }
 
+    /**
+     * Seul le Technicien a le droit d'enregistrer une intervention physique
+     * L'Admin supervise et consulte l'historique sans saisir d'intervention.
+     */
     public function intervene(User $user, Signalement $signalement): bool
     {
-        return $user->hasRole(['admin', 'technicien']);
+        return $user->hasRole('technicien');
     }
 }
