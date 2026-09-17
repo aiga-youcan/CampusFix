@@ -18,7 +18,6 @@ class Signalement extends Model
         'category',
         'severity',
         'status',
-        'photo_path',
     ];
 
     public function user()

@@ -3,22 +3,17 @@
 namespace App\Services;
 
 use App\Models\Salle;
-use Illuminate\Database\Eloquent\Collection;
 
 class SalleService
 {
+    /**
+     * Récupère les salles regroupées par bâtiment pour alimenter les <optgroup> du formulaire
+     */
     public function getGroupedByBuilding()
     {
-        return Salle::orderBy('building')->orderBy('name')->get()->groupBy('building');
-    }
-
-    public function getAll(): Collection
-    {
-        return Salle::orderBy('name')->get();
-    }
-
-    public function findById(int $id): ?Salle
-    {
-        return Salle::find($id);
+        return Salle::orderBy('building')
+            ->orderBy('name')
+            ->get()
+            ->groupBy('building');
     }
 }

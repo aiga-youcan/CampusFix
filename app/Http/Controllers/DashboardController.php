@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\DashboardService;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -14,6 +13,9 @@ class DashboardController extends Controller
         $this->dashboardService = $dashboardService;
     }
 
+    /**
+     * Affiche le tableau de bord principal avec métriques selon le rôle
+     */
     public function index()
     {
         $user = auth()->user();
@@ -24,6 +26,9 @@ class DashboardController extends Controller
         return view('dashboard.index', compact('stats', 'recentSignalements', 'notifications', 'user'));
     }
 
+    /**
+     * Marque un signalement spécifique comme lu dans la session
+     */
     public function markAsRead($id)
     {
         $read = session('read_notifications', []);
@@ -34,6 +39,9 @@ class DashboardController extends Controller
         return back();
     }
 
+    /**
+     * Marque toutes les notifications non lues comme lues
+     */
     public function markAllAsRead()
     {
         $user = auth()->user();

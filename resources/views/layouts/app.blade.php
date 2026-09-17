@@ -148,7 +148,7 @@
 
     <footer class="bg-white border-t border-slate-200 py-5 text-center text-xs text-slate-500">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-            <div>CampusFix &copy; 2026 — CC Fquih Ben Salah (Université Sultan Moulay Slimane)</div>
+            <div>CampusFix &copy; 2026 — CC Fquih Ben Salah </div>
             <div class="text-slate-400">Système de Gestion de Maintenance</div>
         </div>
     </footer>
