@@ -50,10 +50,6 @@
                 <a href="<?php echo e(route('signalements.index')); ?>" class="text-xs font-medium transition-colors <?php echo e(request()->routeIs('signalements.*') ? 'text-slate-900 font-semibold' : 'text-slate-500 hover:text-slate-900'); ?>">
                     Signalements
                 </a>
-                <a href="<?php echo e(route('signalements.create')); ?>" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-900 hover:bg-slate-800 text-white transition-colors">
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-                    <span>Déclarer une panne</span>
-                </a>
             </nav>
 
             <div class="flex items-center space-x-3">
