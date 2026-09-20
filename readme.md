@@ -101,15 +101,19 @@ Assurez-vous d'avoir installé les éléments suivants :
 
 ## 📸 Captures d'Écran
 
-| Tableau de Bord Admin | Formulaire de Signalement | 
-| ----- | ----- | 
+| Tableau de Bord Admin |
+| ----- | 
 | <img src="https://github.com/user-attachments/assets/c16d41ea-f96c-42bc-a4f4-9502be570744" />
+| Formulaire de Signalement |
+| ----- | 
 | <img src="https://github.com/user-attachments/assets/1eb398d6-e03c-46d3-9329-a186930a6de0" />
 | 
 
-| Vue Technicien | Notifications en Temps Réel | 
-| ----- | ----- | 
+| Vue Technicien |
+| ----- |
 | <img src="https://github.com/user-attachments/assets/ee7a8063-1113-444c-ac88-5465dbdc718c" />
+| Notifications en Temps Réel | 
+| ----- | 
 | <img src="https://github.com/user-attachments/assets/1f3a1842-034e-43bf-a08d-54b77d43adaa" />
 | 
 
