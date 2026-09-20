@@ -103,15 +103,15 @@ Assurez-vous d'avoir installé les éléments suivants :
 
 | Tableau de Bord Admin | Formulaire de Signalement | 
 | ----- | ----- | 
-| <img src="<img width="1735" height="941" alt="image" src="https://github.com/user-attachments/assets/c16d41ea-f96c-42bc-a4f4-9502be570744" />
-" alt="Admin Dashboard" width="400"/> | <img src="<img width="1735" height="802" alt="image" src="https://github.com/user-attachments/assets/1eb398d6-e03c-46d3-9329-a186930a6de0" />
-" alt="User Form" width="400"/> | 
+| <img src="https://github.com/user-attachments/assets/c16d41ea-f96c-42bc-a4f4-9502be570744" />
+| <img src="https://github.com/user-attachments/assets/1eb398d6-e03c-46d3-9329-a186930a6de0" />
+| 
 
 | Vue Technicien | Notifications en Temps Réel | 
 | ----- | ----- | 
-| <img src="<img width="1735" height="915" alt="image" src="https://github.com/user-attachments/assets/ee7a8063-1113-444c-ac88-5465dbdc718c" />
-" alt="Technician View" width="400"/> | <img src="<img width="1735" height="941" alt="image" src="https://github.com/user-attachments/assets/1f3a1842-034e-43bf-a08d-54b77d43adaa" />
-" alt="Notifications" width="400"/> | 
+| <img src="https://github.com/user-attachments/assets/ee7a8063-1113-444c-ac88-5465dbdc718c" />
+| <img src="https://github.com/user-attachments/assets/1f3a1842-034e-43bf-a08d-54b77d43adaa" />
+| 
 
 ## 📂 Structure du Projet
 
