@@ -97,19 +97,21 @@ Assurez-vous d'avoir installé les éléments suivants :
    *(L'option `--seed` remplira la base de données avec des utilisateurs, des salles et des tickets de test).*
 
 6. **Accéder à l'Application :**
-   Ouvrez votre navigateur et allez sur : `http://localhost:8000`
+   Ouvrez votre navigateur et allez sur : `(https://campusfix.freehosting.dev/)`
 
 ## 📸 Captures d'Écran
 
-*(Remplacez ces espaces par de vraies captures d'écran de votre application pour mettre en valeur votre travail)*
-
 | Tableau de Bord Admin | Formulaire de Signalement | 
 | ----- | ----- | 
-| <img src="lien_image_1" alt="Admin Dashboard" width="400"/> | <img src="lien_image_2" alt="User Form" width="400"/> | 
+| <img src="<img width="1735" height="941" alt="image" src="https://github.com/user-attachments/assets/c16d41ea-f96c-42bc-a4f4-9502be570744" />
+" alt="Admin Dashboard" width="400"/> | <img src="<img width="1735" height="802" alt="image" src="https://github.com/user-attachments/assets/1eb398d6-e03c-46d3-9329-a186930a6de0" />
+" alt="User Form" width="400"/> | 
 
 | Vue Technicien | Notifications en Temps Réel | 
 | ----- | ----- | 
-| <img src="lien_image_3" alt="Technician View" width="400"/> | <img src="lien_image_4" alt="Notifications" width="400"/> | 
+| <img src="<img width="1735" height="915" alt="image" src="https://github.com/user-attachments/assets/ee7a8063-1113-444c-ac88-5465dbdc718c" />
+" alt="Technician View" width="400"/> | <img src="<img width="1735" height="941" alt="image" src="https://github.com/user-attachments/assets/1f3a1842-034e-43bf-a08d-54b77d43adaa" />
+" alt="Notifications" width="400"/> | 
 
 ## 📂 Structure du Projet
 
