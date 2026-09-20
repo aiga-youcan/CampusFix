@@ -39,8 +39,6 @@ Ce projet respecte les principes de la Clean Architecture en utilisant le patron
 * **Design Pattern :** MVC + Service / Repository Pattern.
 * **Conception de la Base de Données :** Base de données relationnelle normalisée pour assurer l'intégrité des données.
 
-> **Note pour le Jury :** La documentation UML complète (Diagramme des Cas d'Utilisation, Diagramme de Classes, Diagrammes de Séquence) est disponible dans le dossier `docs/` de ce dépôt.
-
 ## 🛠️ Technologies Utilisées
 
 ### Backend
@@ -71,7 +69,7 @@ Assurez-vous d'avoir installé les éléments suivants :
 
 1. **Cloner le dépôt :**
    ```bash
-   git clone https://github.com/votre-nom-utilisateur/campusfix.git
+   git clone https://github.com/aiga-youcan/campusfix.git
    cd campusfix
    ```
 
@@ -142,9 +140,9 @@ campusfix/
 
 ## 👨‍💻 Auteur
 
-**[Votre Nom]**
+**SABRAR RIDA**
 
-* LinkedIn: [Votre Profil](https://linkedin.com/in/votreprofil)
-* GitHub: [@votre-nom-utilisateur](https://github.com/votre-nom-utilisateur)
+* LinkedIn: [Votre Profil](https://linkedin.com/in/ridasabrar)
+* GitHub: [@aiga-youcan](https://github.com/aiga-youcan)
 
 *Développé avec ❤️ comme Projet de Fin d'Étude.*
